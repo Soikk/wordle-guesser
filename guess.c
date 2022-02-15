@@ -12,6 +12,17 @@ int len(char *w){
         return l;
 }
 
+char *minimize(char *w){
+	int l = len(w);
+	char *r = malloc(l*sizeof(char));
+	for(int i = 0; i < l; ++i)
+		if(w[i] >= 'A' && w[i] <= 'Z')
+			r[i] = w[i] - 'A' + 'a';
+		else
+			r[i] = w[i];
+	return r;
+}
+
 int hasC(char *w, char c){
         int l = 0;
         while(w[l]){
@@ -95,6 +106,7 @@ int main(int argc, char *argv[]){
 		len = getline(&word, &len, fp);
 		unac_string("UTF-8", word, len, &word, &len);
 		word[len--] = '\0';
+		word = minimize(word);
 		int found = 1;
 		
 		for(int i = 0; i < gl; ++i)
