@@ -113,7 +113,7 @@ int main(int argc, char *argv[]){
 		len = getline(&word, &len, fp);
 		unac_string("UTF-8", word, len, &word, &len);
 		word[len--] = '\0';
-		//word = minimize(word);
+		word = minimize(word);
 		int found = 1;
 		
 		for(int i = 0; i < gl; ++i)
