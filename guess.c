@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <unac.h>
 
-#define WLEN 5
-
-
 
 int len(char *w){
         int l = -1;
@@ -20,17 +17,28 @@ char *minimize(char *w){
 			r[i] = w[i] - 'A' + 'a';
 		else
 			r[i] = w[i];
+	r[l] = '\0';
 	return r;
 }
 
 int hasC(char *w, char c){
-        int l = 0;
-        while(w[l]){
-                if(w[l] == c)
-                        return 1;
-                ++l;
+        int i = 0;
+        while(w[i]){
+		if(w[i] == c)
+			return 1;
+		++i;
         }
         return 0;
+}
+
+char *append(char *w, char c){
+	int l = len(w);
+	char *r = malloc((l+1)*sizeof(char));
+	for(int i = 0; i < l; ++i)
+		r[i] = w[i];
+	r[l] = c;
+	r[l+1] = '\0';
+	return r;
 }
 
 int equals(char *w1, char *w2){
@@ -71,7 +79,6 @@ int main(int argc, char *argv[]){
 	char *black = ".....";
 	int print = 0;
 
-
 	for(int i = 1; i < argc; ++i){
 		if(equals(argv[i], "-g")){
 			++i;
@@ -99,14 +106,14 @@ int main(int argc, char *argv[]){
 		sol = fopen("sol.txt", "w");
 
 	int lc = getLineCount(fp);
-
+	
 	for(int l = 0; l < lc; ++l){
 		char *word;
 		size_t len = 0;
 		len = getline(&word, &len, fp);
 		unac_string("UTF-8", word, len, &word, &len);
 		word[len--] = '\0';
-		word = minimize(word);
+		//word = minimize(word);
 		int found = 1;
 		
 		for(int i = 0; i < gl; ++i)
@@ -114,20 +121,26 @@ int main(int argc, char *argv[]){
 				found = 0;
 				break;
 			}
-
 		if(found){
 			for(int i = 0; i < yl; ++i)
 				if(yellow[i] != '.' && !hasC(word, yellow[i]) || word[i] == yellow[i]){
 					found = 0;
 					break;
 				}
-
 			if(found){
-				for(int i = 0; i < bl; ++i)
-					if(hasC(word, black[i])){
-						found = 0;
-						break;
+				for(int i = 0; i < bl; ++i){
+					if(!hasC(green, black[i]) && !hasC(yellow, black[i])){
+						if(hasC(word, black[i])){
+							found = 0;
+							break;
+						}
+					}else{
+						if(black[i] != '.' && !hasC(word, black[i]) || word[i] == black[i]){
+							found = 0;
+							break;
+						}
 					}
+				}
 			}
 		}
 
@@ -136,6 +149,7 @@ int main(int argc, char *argv[]){
 			if(print)
 				printf("%s", word);
 		}
+		//printf("check\n\n");
 	}
 
 	fclose(fp);
